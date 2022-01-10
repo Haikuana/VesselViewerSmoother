@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <fstream>
 #include <algorithm>
-#include <io.h>
 
 #include <QDir>
 #include <QString>
