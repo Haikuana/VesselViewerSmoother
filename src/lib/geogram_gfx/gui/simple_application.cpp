@@ -139,7 +139,7 @@ namespace GEO {
 	edit_clip_ = false;
 	fixed_clip_ = false;
 	clip_plane_ = true;
-	background_color_ = vec4f(0.0f, 0.0f, 0.0f, 1.0f);	
+	background_color_ = vec4f(1.0f, 1.0f, 1.0f, 1.0f);	
 	effect_ = GLenum(0);
 	
 	cells_shrink_ = 0.0f;
@@ -780,122 +780,123 @@ namespace GEO {
 	console_->draw(&console_visible_);
     }
     
-    void SimpleApplication::draw_menu_bar() {
-	if(!menubar_visible_) {
-	    return;
-	}
-
-	if(phone_screen_) {
-	    if(ImGui::BeginMainMenuBar()) {
-
-		float w = ImGui::GetContentRegionAvail().x;
-		if(ImGui::BeginMenu(icon_UTF8("ellipsis-v"))) {
-		    draw_application_menus();
-		    draw_fileops_menu();
-		    draw_about();
-		    ImGui::EndMenu();
-		}
-		w -= ImGui::GetContentRegionAvail().x; // gets btn size
-
-		ImGui::Dummy(ImVec2(0.5f*w, 1.0));
-		
-		if(supported_read_file_extensions() != "") {
-			if (ImGui::SimpleButton(
-				icon_UTF8("folder-open") + "##menubar_open")
-				) {
-				ImGui::OpenFileDialog(
-					"##load_dlg",
-					supported_read_file_extensions().c_str(),
-					filename_,
-					ImGuiExtFileDialogFlags_Load
-				);
-			}
+	void SimpleApplication::draw_menu_bar() {
+		if (!menubar_visible_) {
+			return;
 		}
 
-                if(supported_write_file_extensions() != "") {
-		    if(ImGui::SimpleButton(
-			   icon_UTF8("save") + "##menubar_save")
-		    ) {
-			ImGui::OpenFileDialog(
-			    "##save_dlg",
-			    supported_write_file_extensions().c_str(),
-			    filename_,
-			    ImGuiExtFileDialogFlags_Save
-			);
-		    }
-		}
+		if (phone_screen_) {
+			if (ImGui::BeginMainMenuBar()) {
 
-		draw_application_icons();
-		
-		if(use_text_editor_) {
-		    ImGui::Dummy(ImVec2(0.5f*w, 1.0));
-		    if(ImGui::SimpleButton(icon_UTF8("keyboard"))) {
+				float w = ImGui::GetContentRegionAvail().x;
+				if (ImGui::BeginMenu(icon_UTF8("ellipsis-v"))) {
+					draw_application_menus();
+					draw_fileops_menu();
+					draw_about();
+					ImGui::EndMenu();
+				}
+				w -= ImGui::GetContentRegionAvail().x; // gets btn size
+
+				ImGui::Dummy(ImVec2(0.5f * w, 1.0));
+
+				if (supported_read_file_extensions() != "") {
+					if (ImGui::SimpleButton(
+						icon_UTF8("folder-open") + "##menubar_open")
+						) {
+						ImGui::OpenFileDialog(
+							"##load_dlg",
+							supported_read_file_extensions().c_str(),
+							filename_,
+							ImGuiExtFileDialogFlags_Load
+						);
+					}
+				}
+
+				if (supported_write_file_extensions() != "") {
+					if (ImGui::SimpleButton(
+						icon_UTF8("save") + "##menubar_save")
+						) {
+						ImGui::OpenFileDialog(
+							"##save_dlg",
+							supported_write_file_extensions().c_str(),
+							filename_,
+							ImGuiExtFileDialogFlags_Save
+						);
+					}
+				}
+
+				draw_application_icons();
+
+				if (use_text_editor_) {
+					ImGui::Dummy(ImVec2(0.5f * w, 1.0));
+					if (ImGui::SimpleButton(icon_UTF8("keyboard"))) {
 #ifdef GEO_OS_ANDROID			
-			AndroidUtils::show_soft_keyboard(
-			    CmdLine::get_android_app()
-			);
+						AndroidUtils::show_soft_keyboard(
+							CmdLine::get_android_app()
+						);
 #endif			
-		    }
-		}
+					}
+				}
 
-		ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - w, 1.0));
-		
-		if(ImGui::BeginMenu(icon_UTF8("bars"))) {
-		    draw_windows_menu();
-		    ImGui::EndMenu();
-		}
+				ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - w, 1.0));
 
-		ImGui::EndMainMenuBar();
-	    }
-	    return;
-	} 
-	
-        if(ImGui::BeginMainMenuBar()) {
-            if(ImGui::BeginMenu("File")) {
-                if(supported_read_file_extensions() != "") {
-                    draw_load_menu();
-                }
-#ifndef GEO_OS_EMSCRIPTEN		
-		if(current_file_ != "") {
-		    if(ImGui::MenuItem(icon_UTF8("save") + " Save")) {
-			if(save(current_file_)) {
-			    Logger::out("I/O") << "Saved "
-					       << current_file_ << std::endl;
-			} else {
-			    Logger::out("I/O") << "Could not save "
-					       << current_file_ << std::endl;
+				if (ImGui::BeginMenu(icon_UTF8("bars"))) {
+					draw_windows_menu();
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMainMenuBar();
 			}
-		    }
+			return;
 		}
+
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (supported_read_file_extensions() != "") {
+					draw_load_menu();
+				}
+#ifndef GEO_OS_EMSCRIPTEN		
+				if (current_file_ != "") {
+					if (ImGui::MenuItem(icon_UTF8("save") + " Save")) {
+						if (save(current_file_)) {
+							Logger::out("I/O") << "Saved "
+								<< current_file_ << std::endl;
+						}
+						else {
+							Logger::out("I/O") << "Could not save "
+								<< current_file_ << std::endl;
+						}
+					}
+				}
 #endif		
-                if(supported_write_file_extensions() != "") {
-                    draw_save_menu();
-                }
-		draw_fileops_menu();
+				if (supported_write_file_extensions() != "") {
+					draw_save_menu();
+				}
+				draw_fileops_menu();
 #ifndef GEO_OS_EMSCRIPTEN                        
-                ImGui::Separator();
-                if(ImGui::MenuItem(icon_UTF8("door-open") + " quit",
-				   "[q]", false, true)
-		) {
-                    this->stop();
-                }
+				ImGui::Separator();
+				if (ImGui::MenuItem(icon_UTF8("door-open") + " quit",
+					"[q]", false, true)
+					) {
+					this->stop();
+				}
 #endif
-                draw_about();
-                // Key shortcuts not really relevant on Android		
-		if(!phone_screen_) {
-		    draw_help();
+				draw_about();
+				// Key shortcuts not really relevant on Android		
+				if (!phone_screen_) {
+					draw_help();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Windows")) {
+				draw_windows_menu();
+				ImGui::EndMenu();
+			}
+			draw_application_menus();
+
+			ImGui::EndMainMenuBar();
 		}
-                ImGui::EndMenu();
-            }
-	    if(ImGui::BeginMenu("Windows")) {
-		draw_windows_menu();
-		ImGui::EndMenu();
-	    }
-            draw_application_menus();
-            
-            ImGui::EndMainMenuBar();            
 	}
-    }
 
     void SimpleApplication::draw_load_menu() {
 #ifdef GEO_OS_EMSCRIPTEN

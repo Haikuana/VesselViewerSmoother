@@ -455,7 +455,7 @@ private:
 
 		CMarchingCube.set_grid3d(&grids);
 
-		surface* S = CMarchingCube.calculate_isosurface(pixel_width * 1.8);
+		surface* S = CMarchingCube.calculate_isosurface(pixel_width * 1.8);//1.8
 #if 0
 		std::string filen_ = "marching_cube.obj";
 		S->save_obj(filen_.data());
